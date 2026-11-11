@@ -1,0 +1,410 @@
+.app {
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr 25%;
+  grid-template-columns: 25% 75%;
+  grid-template-areas:
+    'header header'
+    'left main'
+    'bottom bottom';
+}
+
+.header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 40px;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.header h1 {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.net-toggle,
+.seg {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.net-toggle {
+  margin-left: -0.5rem;
+}
+
+.net-toggle button,
+.seg button {
+  padding: 0.1rem 0.6rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.net-toggle button.on,
+.seg button.on {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.header-stat {
+  font-size: 13px;
+}
+
+.header-meta {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.left {
+  grid-area: left;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bottom {
+  grid-area: bottom;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+}
+
+/* min-height/min-width 0 lets grid children shrink so they scroll instead of growing the page */
+.left,
+.main,
+.bottom {
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.main,
+.bottom {
+  overflow: hidden;
+}
+
+.bottom {
+  padding: 0.5rem 1rem;
+}
+
+.pane-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.left-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.link:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.list-controls {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.list-controls input,
+.list-controls select {
+  min-width: 0;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.list-controls input {
+  flex: 1;
+}
+
+.error {
+  color: var(--status-critical);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.counts {
+  font-variant-numeric: tabular-nums;
+}
+
+.actor-group + .actor-group {
+  margin-top: 0.6rem;
+}
+
+.actor-head {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 0.15rem;
+  padding: 0 0.5rem;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 0.4rem;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.method-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.method {
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.method-body {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.2rem 0.5rem 0.2rem 1.4rem;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.method-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.method:hover {
+  background: var(--border);
+}
+
+.method.selected {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.method.selected .counts.muted {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.method.selected .line-key {
+  outline: 1px solid var(--bg);
+}
+
+.range-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.step {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: none;
+  color: var(--text);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.step:disabled {
+  color: var(--muted);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.range-label {
+  margin-left: 0.5rem;
+}
+
+.range-hint {
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main-chart {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.mix-table {
+  flex: 0 0 auto;
+  max-height: 30%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mix-table th {
+  color: var(--muted);
+  font-weight: 500;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+
+.mix-table th:first-child,
+.mix-table td:first-child {
+  text-align: left;
+}
+
+.mix-table td {
+  padding: 0.1rem 0;
+  text-align: right;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.panel-head {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.panel-title {
+  font-weight: 600;
+}
+
+.chart-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.chart-legend {
+  position: relative;
+  display: flex;
+  gap: 0.9rem;
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Full-width hidden copy of the legend, measured to decide how many items fit. */
+.chart-legend-measure {
+  position: absolute;
+  display: flex;
+  gap: 0.9rem;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.line-key {
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+.chart {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.chart-plot {
+  position: absolute;
+  inset: 0;
+}
+
+.chart-plot .u-cursor-x {
+  border-right: 1px solid var(--muted);
+}
+
+.chart-plot .u-select {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.chart-empty {
+  position: absolute;
+  inset: 40% 0 auto;
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.chart-tip-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.chart-tip {
+  position: fixed;
+  z-index: 10;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 11px;
+  pointer-events: none;
+  white-space: nowrap;
+}
