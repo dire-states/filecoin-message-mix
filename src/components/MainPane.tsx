@@ -1,5 +1,5 @@
 import { formatCount, formatDate, formatTime } from '../lib/format'
-import { coverage, DAY, PRESETS, total, type Preset, type Range, type Series } from '../lib/series'
+import { bucketOf, coverage, DAY, PRESETS, total, type Preset, type Range, type Series } from '../lib/series'
 import type { MixIndex } from '../lib/types'
 import { LineKey } from './ChartLegend'
 import TimeChart from './TimeChart'
@@ -26,11 +26,17 @@ function MainPane({ index, range, bucket, times, series, selected, rangeTotal, l
 
   function preset(p: Preset) {
     if (p === 'all') return onRange(cov)
-    onRange({ from: cov.to - PRESETS[p], to: cov.to })
+    // End on the bucket that holds the latest data, so the preset spans exactly its length.
+    const b = bucketOf({ from: 0, to: PRESETS[p] })
+    const to = Math.ceil(cov.to / b) * b
+    onRange({ from: to - PRESETS[p], to })
   }
-  const active = (Object.keys(PRESETS) as (keyof typeof PRESETS)[]).find(
-    (p) => span === PRESETS[p] && range.to >= cov.to && range.to - cov.to < (bucket === DAY ? DAY : 3600),
-  )
+  // A preset is active when the range ends at the latest data and spans it (snapping can add a bucket);
+  // "all" when the range holds all the data and no shorter preset fits.
+  const atEnd = range.to >= cov.to && range.to - cov.to < bucket
+  const active: Preset | undefined =
+    (Object.keys(PRESETS) as (keyof typeof PRESETS)[]).find((p) => atEnd && Math.abs(span - PRESETS[p]) <= bucket) ??
+    (range.from <= cov.from && range.to >= cov.to ? 'all' : undefined)
   const step = (dir: -1 | 1) => onRange({ from: range.from + dir * span, to: range.to + dir * span })
   const label = (t: number) => (bucket >= DAY ? formatDate(t) : formatTime(t))
 

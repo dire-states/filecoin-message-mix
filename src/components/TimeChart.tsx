@@ -22,6 +22,8 @@ interface Props {
   onReset?: () => void
   // Click on a bucket.
   onPick?: (time: number) => void
+  // A span to shade, e.g. the range the main chart shows.
+  highlight?: { from: number; to: number } | null
 }
 
 const FONT = '10px system-ui, -apple-system, "Segoe UI", sans-serif'
@@ -33,11 +35,12 @@ function niceStep(max: number, count: number): number {
   return (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag
 }
 
-function TimeChart({ times, bucket, series, kind, legend = true, onZoom, onReset, onPick }: Props) {
+function TimeChart({ times, bucket, series, kind, legend = true, onZoom, onReset, onPick, highlight }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const dark = useDarkMode()
-  // Hovered bucket, with the plot area's viewport rect for placing the readout.
-  const [hover, setHover] = useState<{ idx: number; left: number; rect: DOMRect } | null>(null)
+  // Hovered bucket, with the plot area's viewport rect for placing the readout. It belongs to one
+  // `times` array; after a range change the old index means nothing.
+  const [hover, setHover] = useState<{ idx: number; left: number; rect: DOMRect; times: number[] } | null>(null)
   // Latest callbacks, read by the uPlot hooks without rebuilding the chart.
   const handlers = useRef({ onZoom, onReset, onPick })
   useEffect(() => {
@@ -73,6 +76,12 @@ function TimeChart({ times, bucket, series, kind, legend = true, onZoom, onReset
     const muted = css.getPropertyValue('--muted').trim()
     const grid = css.getPropertyValue('--grid').trim()
     const axis = css.getPropertyValue('--axis').trim()
+    // The surface the chart sits on, for fading parts of it.
+    let surface = 'transparent'
+    for (let n: HTMLElement | null = el; n && /transparent|rgba\(0, 0, 0, 0\)/.test(surface); n = n.parentElement) {
+      surface = getComputedStyle(n).backgroundColor
+    }
+    const fade = `color-mix(in srgb, ${surface} 70%, transparent)`
     const bars = uPlot.paths.bars!({ size: [0.85, Infinity], gap: 1 })
     const linear = uPlot.paths.linear!()
 
@@ -139,13 +148,27 @@ function TimeChart({ times, bucket, series, kind, legend = true, onZoom, onReset
         }),
       ],
       hooks: {
+        // Fade everything outside the highlighted span, so the span keeps its full colors.
+        draw: [
+          (u) => {
+            if (!highlight) return
+            const { left, top, width, height } = u.bbox
+            const x0 = Math.min(left + width, Math.max(left, u.valToPos(highlight.from, 'x', true)))
+            const x1 = Math.min(left + width, Math.max(left, u.valToPos(highlight.to, 'x', true)))
+            u.ctx.save()
+            u.ctx.fillStyle = fade
+            u.ctx.fillRect(left, top, x0 - left, height)
+            u.ctx.fillRect(x1, top, left + width - x1, height)
+            u.ctx.restore()
+          },
+        ],
         setCursor: [
           (u) => {
             const idx = u.cursor.idx
             setHover(
               idx === null || idx === undefined || (u.cursor.left ?? -1) < 0
                 ? null
-                : { idx, left: u.cursor.left!, rect: u.over.getBoundingClientRect() },
+                : { idx, left: u.cursor.left!, rect: u.over.getBoundingClientRect(), times },
             )
           },
         ],
@@ -176,11 +199,11 @@ function TimeChart({ times, bucket, series, kind, legend = true, onZoom, onReset
       ro.disconnect()
       u.destroy()
     }
-  }, [times, bucket, series, kind, stacked, share, dark])
+  }, [times, bucket, series, kind, stacked, share, dark, highlight])
 
   // Hover readout: raw values of every series at the hovered bucket, largest first.
   let tip = null
-  if (hover) {
+  if (hover && hover.times === times) {
     const r = hover.rect
     const x = r.left + hover.left
     const style: React.CSSProperties = x > r.left + r.width / 2 ? { right: window.innerWidth - x + 10 } : { left: x + 10 }

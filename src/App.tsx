@@ -238,7 +238,7 @@ function Dashboard({ net, onNet }: { net: NetKey; onNet: (net: NetKey) => void }
         onRange={(r) => setView(r)}
         onReset={() => setView(null)}
       />
-      <BottomPane index={index} daily={daily} actorColor={actorColor} actorSlots={actorSlots} onDay={(t) => setView({ from: t, to: t + DAY })} />
+      <BottomPane index={index} daily={daily} actorColor={actorColor} actorSlots={actorSlots} onDay={(t) => setView({ from: t, to: t + DAY })} range={range} />
     </div>
   )
 }

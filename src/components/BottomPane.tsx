@@ -11,10 +11,12 @@ interface Props {
   actorColor: (actor: string) => string
   actorSlots: Map<string, number>
   onDay: (time: number) => void
+  // The range the main chart shows, shaded here.
+  range: { from: number; to: number } | null
 }
 
 // Whole-history context: messages per day, and how the actor mix shifts day by day.
-function BottomPane({ index, daily, actorColor, actorSlots, onDay }: Props) {
+function BottomPane({ index, daily, actorColor, actorSlots, onDay, range }: Props) {
   const dark = useDarkMode()
   const data = useMemo(() => {
     if (!index || !daily) return null
@@ -45,14 +47,14 @@ function BottomPane({ index, daily, actorColor, actorSlots, onDay }: Props) {
             </span>
           )}
         </div>
-        {data && <TimeChart times={data.times} bucket={DAY} series={data.perDay} kind="bars" legend={false} onPick={onDay} />}
+        {data && <TimeChart times={data.times} bucket={DAY} series={data.perDay} kind="bars" legend={false} onPick={onDay} highlight={range} />}
       </div>
       <div className="panel">
         <div className="panel-head">
           <span className="panel-title">Actor share per day</span>
           <span className="muted">last {data ? data.recent.length : 30} days</span>
         </div>
-        {data && <TimeChart times={data.recent} bucket={DAY} series={data.share} kind="share" onPick={onDay} />}
+        {data && <TimeChart times={data.recent} bucket={DAY} series={data.share} kind="share" onPick={onDay} highlight={range} />}
       </div>
     </section>
   )
