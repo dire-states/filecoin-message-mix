@@ -1,0 +1,12 @@
+[Unit]
+Description=message-mix calibnet update, 4 times a day
+
+[Timer]
+# 30 minutes after sector-spiegel's calibnet run, clear of its mainnet run at :10.
+OnCalendar=*-*-* 00/6:30:00
+# Catch up on a run missed while the host was down.
+Persistent=true
+Unit=message-mix@calibnet.service
+
+[Install]
+WantedBy=timers.target

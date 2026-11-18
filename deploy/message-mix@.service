@@ -1,0 +1,17 @@
+# One count + commit + push for a network: message-mix@calibnet / message-mix@mainnet.
+# Started by message-mix-<network>.timer; run by hand with `systemctl start message-mix@mainnet`.
+[Unit]
+Description=message-mix update (%i)
+After=network-online.target
+Wants=network-online.target
+# Waits for a node that is still starting; ordering only, a stopped node fails the run cleanly.
+After=calib-lotus.service main-lotus.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/dire-states/message-mix/filecoin-message-mix
+# A Node 26 tarball unpacked to /opt/dire-states/node takes precedence over a system node.
+Environment=PATH=/opt/dire-states/node/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/env bash scripts/publish.sh %i
+Nice=10
+TimeoutStartSec=15min

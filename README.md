@@ -56,13 +56,12 @@ scripts/publish.sh mainnet
 Fetches, commits and pushes. `NO_PUSH=1` commits without pushing. The script refuses to run if the
 data repo has uncommitted changes, or if another publish for it is running.
 
-Run it at least every day or two, so the node still has the heights since the last run. 3–4 runs a
-day on the Lotus host is the plan:
+Run it at least every day or two, so the node still has the heights since the last run.
 
-```
-5 */6 * * *   cd /srv/message-mix/filecoin-message-mix && scripts/publish.sh calibnet >> /var/log/message-mix.log 2>&1
-15 */6 * * *  cd /srv/message-mix/filecoin-message-mix && scripts/publish.sh mainnet  >> /var/log/message-mix.log 2>&1
-```
+### On the Lotus host
+
+The runs are automated on the node host with a systemd timer, 4 times a day. Setup steps, deploy keys
+and unit files are in [`deploy/`](deploy/README.md).
 
 ## Configuration
 

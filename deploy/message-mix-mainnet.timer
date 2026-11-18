@@ -1,0 +1,12 @@
+[Unit]
+Description=message-mix mainnet update, 4 times a day
+
+[Timer]
+# 5 minutes after calibnet, so the two runs don't load the host at the same time.
+OnCalendar=*-*-* 00/6:35:00
+# Catch up on a run missed while the host was down.
+Persistent=true
+Unit=message-mix@mainnet.service
+
+[Install]
+WantedBy=timers.target
