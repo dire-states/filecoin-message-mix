@@ -68,7 +68,7 @@ day on the Lotus host is the plan:
 
 | Variable | Used by | Default |
 |---|---|---|
-| `LOTUS_API` | fetch script | calibnet: `http://192.168.50.123:1234/rpc/v1`; mainnet: `http://192.168.50.123:1235/rpc/v1` |
+| `LOTUS_API` | fetch script | calibnet: `http://192.168.50.123:1235/rpc/v1`; mainnet: `http://192.168.50.123:1234/rpc/v1` |
 | `DATA_DIR` | publish.sh | the sibling data repo for the network |
 | `NO_PUSH` | publish.sh | unset (push) |
 | `DATA_DIR_CALIBNET`, `DATA_DIR_MAINNET` | dev/preview server | the two sibling data repos |
