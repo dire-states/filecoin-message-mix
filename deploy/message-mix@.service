@@ -4,14 +4,19 @@
 Description=message-mix update (%i)
 After=network-online.target
 Wants=network-online.target
-# Waits for a node that is still starting; ordering only, a stopped node fails the run cleanly.
+# Starts after a node that is still starting; ordering only. WAIT_SYNC then waits for it to sync.
 After=calib-lotus.service main-lotus.service
+# The daily runs fire together; run after sector-spiegel instead of loading the host at the same time.
+After=sector-spiegel@%i.service
 
 [Service]
 Type=oneshot
 WorkingDirectory=/opt/dire-states/message-mix/filecoin-message-mix
 # A Node 26 tarball unpacked to /opt/dire-states/node takes precedence over a system node.
 Environment=PATH=/opt/dire-states/node/bin:/usr/local/bin:/usr/bin:/bin
+# Minutes a run waits for its node to come up and sync, e.g. right after boot (lotus sync wait).
+Environment=WAIT_SYNC=180
 ExecStart=/usr/bin/env bash scripts/publish.sh %i
 Nice=10
-TimeoutStartSec=15min
+# Up to 3 h waiting for the node to sync, plus the run.
+TimeoutStartSec=3h15min

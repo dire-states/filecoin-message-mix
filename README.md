@@ -60,7 +60,7 @@ Run it at least every day or two, so the node still has the heights since the la
 
 ### On the Lotus host
 
-The runs are automated on the node host with a systemd timer, 4 times a day. Setup steps, deploy keys
+The runs are automated on the node host with a systemd timer, once a day. Setup steps, deploy keys
 and unit files are in [`deploy/`](deploy/README.md).
 
 ## Configuration

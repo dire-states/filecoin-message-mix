@@ -1,10 +1,10 @@
 [Unit]
-Description=message-mix mainnet update, 4 times a day
+Description=message-mix mainnet update, once a day
 
 [Timer]
-# 5 minutes after calibnet, so the two runs don't load the host at the same time.
-OnCalendar=*-*-* 00/6:35:00
-# Catch up on a run missed while the host was down.
+# Midnight, or at boot if the host was down then. The services wait for the node to sync and run
+# one after another: sector-spiegel, message-mix, fil-release.
+OnCalendar=daily
 Persistent=true
 Unit=message-mix@mainnet.service
 

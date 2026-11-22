@@ -1,6 +1,6 @@
 # Running the updates on the node host
 
-These steps set up the count, commit and push runs, 4 times a day, on the host that runs the Lotus
+These steps set up the count, commit and push runs, once a day, on the host that runs the Lotus
 nodes, under `/opt/dire-states`, next to sector-spiegel. Your admin login (e.g. `ptrk`) owns the files
 there, and the service runs as root. Run the steps as that login; `sudo` marks what needs root.
 
@@ -9,7 +9,8 @@ only. Each key can push to its own data repo and nothing else. The app repo is p
 over HTTPS.
 
 Run often enough: the nodes keep about 1.8 days of messages, and heights a run comes too late for are
-lost (recorded as gaps). Every 6 hours leaves plenty of room for a host that is down for a while.
+lost (recorded as gaps). Once a day leaves room for a host that is down most of the day, but not for
+one that stays down for two days.
 
 ## 1. Prerequisites
 
@@ -83,8 +84,9 @@ systemctl list-timers 'message-mix*' 'sector-spiegel*'
 sudo systemctl start message-mix@calibnet   # one run through systemd, to check the unit
 ```
 
-Calibnet runs at 00:30, 06:30, 12:30 and 18:30, and mainnet 5 minutes later, clear of sector-spiegel's
-runs at :00 and :10. A run missed while the host was down starts at the next boot.
+The runs are daily at midnight, or at the next boot if the host was down then. Each run waits up to 3
+hours for its node to sync, and starts after sector-spiegel's run on the same network. See
+sector-spiegel's `deploy/README.md`, step 6.
 
 - Run now: `sudo systemctl start message-mix@mainnet`
 - Logs: `sudo journalctl -u message-mix@mainnet -e`
